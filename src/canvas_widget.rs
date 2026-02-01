@@ -10,7 +10,7 @@ use ratatui::{
     style::{Color, Style},
     symbols::Marker,
     widgets::{
-        canvas::{Canvas, Context, Line},
+        canvas::{Canvas, Line},
         Block, Widget,
     },
 };
@@ -76,8 +76,8 @@ fn extract_elements(mbox: &MathBox, area_height: f64) -> (Vec<BrailleLine>, Vec<
             // For row r, we want the line in the middle of that cell
             // Screen row r is at canvas y = area_height - r - 0.5 (middle of cell)
             let canvas_y_mid = area_height - row as f64 - 0.5;
-            let canvas_y_top = area_height - row as f64;
-            let canvas_y_bot = area_height - row as f64 - 1.0;
+            let _canvas_y_top = area_height - row as f64;
+            let _canvas_y_bot = area_height - row as f64 - 1.0;
 
             match ch {
                 // Horizontal line for fractions - draw with Braille for smoothness
