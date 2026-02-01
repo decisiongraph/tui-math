@@ -1,10 +1,14 @@
 //! MathBox - A 2D character grid for math rendering
 
-/// Represents a box of characters for rendering math expressions.
+use unicode_segmentation::UnicodeSegmentation;
+use unicode_width::UnicodeWidthStr;
+
+/// Represents a box of grapheme clusters for rendering math expressions.
 /// Uses a 2D grid with baseline tracking for proper vertical alignment.
+/// Each cell holds a grapheme cluster (base char + combining marks).
 #[derive(Clone, Debug)]
 pub struct MathBox {
-    content: Vec<Vec<char>>,
+    content: Vec<Vec<String>>,
     pub width: usize,
     pub height: usize,
     /// The baseline row (0-indexed from top)
@@ -14,10 +18,26 @@ pub struct MathBox {
 impl MathBox {
     /// Create a MathBox from a single-line string
     pub fn from_text(text: &str) -> Self {
-        let chars: Vec<char> = text.chars().collect();
-        let width = chars.len();
+        let graphemes: Vec<String> = text.graphemes(true).map(|g| g.to_string()).collect();
+        let width = text.width();
+
+        // Pad to match display width (handles wide chars)
+        let mut cells = Vec::with_capacity(width);
+        for g in graphemes {
+            let g_width = g.width();
+            cells.push(g);
+            // Add empty cells for wide characters
+            for _ in 1..g_width {
+                cells.push(String::new());
+            }
+        }
+        // Ensure we have exactly 'width' cells
+        while cells.len() < width {
+            cells.push(" ".to_string());
+        }
+
         Self {
-            content: vec![chars],
+            content: vec![cells],
             width,
             height: 1,
             baseline: 0,
@@ -27,7 +47,7 @@ impl MathBox {
     /// Create an empty MathBox with specified dimensions
     pub fn empty(width: usize, height: usize, baseline: usize) -> Self {
         Self {
-            content: vec![vec![' '; width]; height],
+            content: vec![vec![" ".to_string(); width]; height],
             width,
             height,
             baseline,
@@ -37,13 +57,22 @@ impl MathBox {
     /// Create a MathBox from multiple lines
     pub fn from_lines(lines: Vec<String>, baseline: usize) -> Self {
         let height = lines.len();
-        let width = lines.iter().map(|l| l.chars().count()).max().unwrap_or(0);
-        let mut content = vec![vec![' '; width]; height];
+        let width = lines.iter().map(|l| l.width()).max().unwrap_or(0);
+        let mut content = vec![vec![" ".to_string(); width]; height];
 
         for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
+            let mut x = 0;
+            for g in line.graphemes(true) {
                 if x < width {
-                    content[y][x] = ch;
+                    let g_width = g.width();
+                    content[y][x] = g.to_string();
+                    // Mark continuation cells for wide chars
+                    for i in 1..g_width {
+                        if x + i < width {
+                            content[y][x + i] = String::new();
+                        }
+                    }
+                    x += g_width;
                 }
             }
         }
@@ -56,19 +85,35 @@ impl MathBox {
         }
     }
 
-    /// Get character at position (returns space if out of bounds)
+    /// Get grapheme at position (returns space if out of bounds or empty)
     pub fn get(&self, x: usize, y: usize) -> char {
         if y < self.height && x < self.width {
-            self.content[y][x]
+            self.content[y][x].chars().next().unwrap_or(' ')
         } else {
             ' '
+        }
+    }
+
+    /// Get full grapheme cluster at position
+    pub fn get_grapheme(&self, x: usize, y: usize) -> &str {
+        if y < self.height && x < self.width {
+            &self.content[y][x]
+        } else {
+            " "
         }
     }
 
     /// Set character at position
     pub fn set(&mut self, x: usize, y: usize, ch: char) {
         if y < self.height && x < self.width {
-            self.content[y][x] = ch;
+            self.content[y][x] = ch.to_string();
+        }
+    }
+
+    /// Set grapheme cluster at position
+    pub fn set_grapheme(&mut self, x: usize, y: usize, g: &str) {
+        if y < self.height && x < self.width {
+            self.content[y][x] = g.to_string();
         }
     }
 
@@ -79,9 +124,9 @@ impl MathBox {
                 let target_x = x_offset + x;
                 let target_y = y_offset + y;
                 if target_y < self.height && target_x < self.width {
-                    let ch = other.get(x, y);
-                    if ch != ' ' {
-                        self.set(target_x, target_y, ch);
+                    let g = other.get_grapheme(x, y);
+                    if !g.is_empty() && g != " " {
+                        self.set_grapheme(target_x, target_y, g);
                     }
                 }
             }
@@ -162,17 +207,14 @@ impl MathBox {
     pub fn to_string(&self) -> String {
         self.content
             .iter()
-            .map(|row| row.iter().collect::<String>().trim_end().to_string())
+            .map(|row| row.join("").trim_end().to_string())
             .collect::<Vec<_>>()
             .join("\n")
     }
 
     /// Get lines as vector of strings
     pub fn to_lines(&self) -> Vec<String> {
-        self.content
-            .iter()
-            .map(|row| row.iter().collect::<String>())
-            .collect()
+        self.content.iter().map(|row| row.join("")).collect()
     }
 }
 
@@ -193,6 +235,14 @@ mod tests {
         assert_eq!(mb.height, 1);
         assert_eq!(mb.get(0, 0), 'a');
         assert_eq!(mb.get(2, 0), 'c');
+    }
+
+    #[test]
+    fn test_combining_chars() {
+        // T with combining macron (T̄) should be width 1
+        let mb = MathBox::from_text("T\u{0304}");
+        assert_eq!(mb.width, 1);
+        assert_eq!(mb.get_grapheme(0, 0), "T\u{0304}");
     }
 
     #[test]

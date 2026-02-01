@@ -648,6 +648,8 @@ dependencies = [
  "once_cell",
  "ratatui",
  "roxmltree",
+ "unicode-segmentation",
+ "unicode-width 0.2.0",
 ]
 
 [[package]]
