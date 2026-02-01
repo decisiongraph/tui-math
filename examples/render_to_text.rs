@@ -6,7 +6,7 @@ use ratatui::{
     widgets::{Block, Borders},
     Terminal,
 };
-use tui_mathjax::MathWidget;
+use tui_math::MathWidget;
 
 const EXAMPLES: &[(&str, &str)] = &[
     ("Quadratic Formula", r"x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}"),

@@ -6,7 +6,7 @@ use ratatui::{
     widgets::{Block, Borders},
     Terminal,
 };
-use tui_mathjax::MathWidget;
+use tui_math::MathWidget;
 
 fn main() {
     let latex = r"\lim_{x \to \infty} \frac{1}{x} = 0";

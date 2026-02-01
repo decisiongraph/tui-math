@@ -1,6 +1,6 @@
 //! Simple example showing LaTeX to terminal Unicode rendering
 
-use tui_mathjax::render_latex;
+use tui_math::render_latex;
 
 fn main() {
     let examples = [

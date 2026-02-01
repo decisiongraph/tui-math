@@ -6,7 +6,7 @@ use ratatui::{
     widgets::{Block, Borders},
     Terminal,
 };
-use tui_mathjax::MathWidget;
+use tui_math::MathWidget;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();

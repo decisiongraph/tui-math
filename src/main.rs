@@ -1,4 +1,4 @@
-//! Demo application for tui-mathjax
+//! Demo application for tui-math
 
 use crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEventKind},
@@ -14,7 +14,7 @@ use ratatui::{
     Frame, Terminal,
 };
 use std::io;
-use tui_mathjax::MathWidget;
+use tui_math::MathWidget;
 
 const EXAMPLES: &[(&str, &str)] = &[
     ("Quadratic Formula", r"x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}"),
@@ -147,7 +147,7 @@ fn ui(f: &mut Frame, app: &App) {
 
     // Title
     let title = Paragraph::new(Line::from(vec![
-        Span::styled("tui-mathjax ", Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD)),
+        Span::styled("tui-math ", Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD)),
         Span::raw("- "),
         Span::styled(app.current_title(), Style::default().fg(Color::Yellow)),
         Span::raw(format!(" ({}/{})", app.current_example + 1, EXAMPLES.len())),

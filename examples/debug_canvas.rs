@@ -1,6 +1,6 @@
 //! Debug canvas coordinate extraction
 
-use tui_mathjax::MathRenderer;
+use tui_math::MathRenderer;
 
 fn main() {
     let renderer = MathRenderer::new();
