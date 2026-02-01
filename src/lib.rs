@@ -1,11 +1,11 @@
-//! # tui-mathjax
+//! # tui-math
 //!
 //! Render LaTeX math beautifully in terminal UIs with ratatui.
 //!
 //! ## Example
 //!
 //! ```rust,no_run
-//! use tui_mathjax::{MathWidget, render_latex};
+//! use tui_math::{MathWidget, render_latex};
 //!
 //! // Render LaTeX to Unicode string
 //! let rendered = render_latex(r"\frac{x^2 + 1}{y}").unwrap();

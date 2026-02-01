@@ -1,4 +1,4 @@
-# tui-mathjax
+# tui-math
 
 Render LaTeX math beautifully in terminal UIs with [ratatui](https://github.com/ratatui/ratatui).
 
@@ -15,7 +15,7 @@ Render LaTeX math beautifully in terminal UIs with [ratatui](https://github.com/
 
 ```toml
 [dependencies]
-tui-mathjax = "0.1"
+tui-math = "0.1"
 ```
 
 ## Usage
@@ -23,7 +23,7 @@ tui-mathjax = "0.1"
 ### Simple rendering
 
 ```rust
-use tui_mathjax::render_latex;
+use tui_math::render_latex;
 
 let rendered = render_latex(r"\frac{x^2 + 1}{y}")?;
 println!("{}", rendered);
@@ -36,7 +36,7 @@ println!("{}", rendered);
 ### As a ratatui widget
 
 ```rust
-use tui_mathjax::MathWidget;
+use tui_math::MathWidget;
 use ratatui::widgets::Block;
 
 let widget = MathWidget::new(r"\int_0^\infty e^{-x^2} dx")
@@ -48,7 +48,7 @@ frame.render_widget(widget, area);
 ### Stateful widget for caching
 
 ```rust
-use tui_mathjax::{MathWidgetState, StatefulMathWidget};
+use tui_math::{MathWidgetState, StatefulMathWidget};
 
 // Create state once
 let mut state = MathWidgetState::new();

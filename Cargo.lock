@@ -639,7 +639,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "tui-mathjax"
+name = "tui-math"
 version = "0.1.0"
 dependencies = [
  "color-eyre",
