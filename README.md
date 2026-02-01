@@ -2,6 +2,8 @@
 
 Render LaTeX math beautifully in terminal UIs with [ratatui](https://github.com/ratatui/ratatui).
 
+![Quadratic Formula](images/quadratic.png)
+
 ## Features
 
 - LaTeX to Unicode terminal rendering
@@ -27,10 +29,6 @@ use tui_math::render_latex;
 
 let rendered = render_latex(r"\frac{x^2 + 1}{y}")?;
 println!("{}", rendered);
-// Output:
-// x²+1
-// ────
-//   y
 ```
 
 ### As a ratatui widget
@@ -73,24 +71,16 @@ Or the simple CLI example:
 cargo run --example simple
 ```
 
-## Output Examples
+## Rendering Examples
 
-```
-LaTeX: x^2 + y^2 = z^2
-Rendered: x²+y²=z²
-
-LaTeX: \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
-Rendered:
-  -b±√b²-4ac
-x=──────────
-      2a
-
-LaTeX: \sum_{i=1}^n i^2
-Rendered:
- n
- ∑ i²
-i=1
-```
+| Formula | Screenshot |
+|---------|------------|
+| Integral: `\int_0^\infty e^{-x^2} dx = \frac{\sqrt{\pi}}{2}` | ![Integral](images/integral.png) |
+| Sum: `\sum_{n=1}^{\infty} \frac{1}{n^2} = \frac{\pi^2}{6}` | ![Sum](images/sum.png) |
+| Derivative: `\frac{d}{dx} x^n = nx^{n-1}` | ![Derivative](images/derivative.png) |
+| Euler: `e^{i\pi} + 1 = 0` | ![Euler](images/euler.png) |
+| Fraction: `\frac{a + b}{c + d}` | ![Fraction](images/fraction.png) |
+| Square Root: `\sqrt{x^2 + y^2}` | ![Sqrt](images/sqrt.png) |
 
 ## Supported LaTeX
 
